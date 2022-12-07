@@ -1,17 +1,10 @@
 #!/usr/bin/env python3
 
 import sys
-from dataclasses import dataclass
 
 
 FILE_SYSTEM_SIZE = 70000000
 UPDATE_REQUIRES = 30000000
-
-
-@dataclass
-class File:
-    name: str
-    size: int
 
 
 class Directory:
@@ -19,7 +12,7 @@ class Directory:
         self.name = name
         self.parent: Directory | None = parent
         self.sub_dirs: dict[str, Directory] = {}
-        self.files: list[File] = []
+        self.files: dict[str, int] = {}
         self.size = 0
 
     def __str__(self) -> str:
@@ -56,13 +49,14 @@ def load_input(path: str) -> Directory:
                     else:
                         work_dir = work_dir.sub_dirs[parts[2]]
             else:
-                if parts[0] == "dir":
+                if parts[0] == "dir" and parts[1] not in work_dir.sub_dirs:
                     child = Directory(name=parts[1], parent=work_dir)
                     work_dir.sub_dirs[parts[1]] = child
                 else:
-                    file = File(name=parts[1], size=int(parts[0]))
-                    work_dir.files.append(file)
-                    work_dir.enlarge(file.size)
+                    if parts[1] not in work_dir.files:
+                        file_size = int(parts[0])
+                        work_dir.files[parts[1]] = file_size
+                        work_dir.enlarge(file_size)
 
     return root
 

@@ -25,11 +25,13 @@ def load_input(path: str) -> list[tuple[int, int]]:
     return moves
 
 
-def do_moves(moves: list[tuple[int, int]], elements: int) -> int:
+def do_moves(moves: list[tuple[int, int]]) -> (int, int):
     head = (0, 0)
-    tails = [(0, 0)] * elements
-    tail_visited: set[tuple[int, int]] = set()
-    tail_visited.add((0, 0))
+    tails = [(0, 0)] * 9
+    first_visited: set[tuple[int, int]] = set()
+    first_visited.add((0, 0))
+    last_visited: set[tuple[int, int]] = set()
+    last_visited.add((0, 0))
 
     for move in moves:
         # I thought Python would just let me add tuples... I was wrong
@@ -49,12 +51,14 @@ def do_moves(moves: list[tuple[int, int]], elements: int) -> int:
 
             leader = tail
             tails[i] = tail
-        tail_visited.add(leader)
+        first_visited.add(tails[0])
+        last_visited.add(tails[-1])
 
-    return len(tail_visited)
+    return len(first_visited), len(last_visited)
 
 
 if __name__ == "__main__":
     moves = load_input(sys.argv[1])
-    print(do_moves(moves, 1))
-    print(do_moves(moves, 9))
+    part_1, part_2 = do_moves(moves)
+    print(part_1)
+    print(part_2)

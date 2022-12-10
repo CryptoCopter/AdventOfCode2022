@@ -40,21 +40,18 @@ def at_least_its_not_intcode(instructions: list[int | None]) -> None:
         if not part_1_finished:
             if clock + 1 == checkpoint:
                 signal += register * checkpoint
-                try:
-                    checkpoint = next(checkpoints)
-                except StopIteration:
+                checkpoint = next(checkpoints, None)
+                if checkpoint is None:
                     part_1_finished = True
 
         if processing:
             register += instruction
             processing = False
-            instruction = next(instructions)
+            instruction = next(instructions, None)
         else:
             if instruction is None:
-                try:
-                    instruction = next(instructions)
-                except StopIteration:
-                    pass
+                instruction = next(instructions, None)
+
             else:
                 processing = True
 
